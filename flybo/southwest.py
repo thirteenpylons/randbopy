@@ -1,5 +1,5 @@
 """
-This will be the module to check spirit.com flights
+This will be the module to check southwest.com flights
 
 
 Author: Christian M. Fulton
@@ -25,37 +25,44 @@ def execute():
         driver = webdriver.Chrome(
             executable_path="/usr/lib/chromium-browser/chromedriver"
         )
-        driver.get("https://www.spirit.com/")
+        driver.get("https://www.southwest.com/")
         driver.implicitly_wait(15)
 
-        # Cookie hack
-        cook_button = driver.find_element(
-            By.XPATH, value='//*[@id="onetrust-accept-btn-handler"]'
-        )
-        cook_button.click()
-        # BOOK BUTTON
-        bookit = driver.find_element(
-            By.XPATH,
-            value="/html/body/app-root/app-common-header/header/div[2]/div/div[1]/ul/li[1]/a",
-        )
         # Where are you departing from?
         depart_in = driver.find_element(
-            By.XPATH, value='//*[@id="flight-OriginStationCode"]'
+            By.XPATH,
+            value='//*[@id="LandingAirBookingSearchForm_originationAirportCode"]',
         )
         depart_in.click()
         depart_in.send_keys("")  # Where you need to go
+        depart_in.send_keys("\ue007")
         # Where do you want to go?
         arrive_in = driver.find_element(
-            By.XPATH, value='//*[@id="flight-DestinationStationCode"]'
+            By.XPATH,
+            value='//*[@id="LandingAirBookingSearchForm_destinationAirportCode"]',
         )
         arrive_in.click()
         arrive_in.send_keys("")  # Destination
+        arrive_in.send_keys("\ue007")
         # round trip or one way?
-        ask_trip = input("Is this a one way trip or round trip?: ")
-        if "one" in ask_trip:
-            one_radio = driver.find_element(By.XPATH, value='//*[@id="one-way"]')
-        # What date?
+        trip_in = input("Is this a one way trip or round trip?: ")
+        if "one" in trip_in:
+            one_radio = driver.find_element(
+                By.XPATH,
+                value='//*[@id="TabbedArea_4-panel-0"]/div/div/div/form/div[1]/div[1]/fieldset/ul/li[2]/label/input',
+            )
+            from_in = input("What is the departure date?: YYYY MM DD ")
+        else:
+            # ask return date
+            return_in = input("What would be the return date?: YYYY MM DD ")
 
+        depart_calendar = driver.find_element(
+            By.XPATH,
+            value='//*[@id="TabbedArea_4-panel-0"]/div/div/div/form/div[2]/div[2]/div[1]/label/div[1]/div/div/div/span/span',
+        )
+        enter_date = driver.find_element(
+            By.PATH, value=f'//*[@id="calendar-138-{2021-12-14}"]'
+        )
         email_in = driver.find_element(By.XPATH, value='//*[@id="email"]')
         email_in.send_keys(CREDS.ETSY_UNAME)
         pwd_in = driver.find_element(By.XPATH, value='//*[@id="pass"]')
